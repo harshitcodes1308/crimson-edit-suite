@@ -44,51 +44,70 @@ const ScrollProgress = () => {
   };
 
   return (
-    <div className="fixed bottom-8 left-0 right-0 z-50 hidden lg:block">
-      <div className="container mx-auto px-12">
-        <div className="relative flex items-center justify-between">
+    <div className="fixed bottom-6 left-0 right-0 z-50 hidden lg:block">
+      <div className="mx-auto max-w-5xl px-16">
+        <div className="relative h-16">
           {/* Progress line background */}
-          <div className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2 bg-muted-foreground/30" />
+          <div className="absolute left-0 right-0 bottom-0 h-px bg-muted-foreground/40" />
           
           {/* Active progress line */}
           <div 
-            className="absolute left-0 top-1/2 h-px -translate-y-1/2 bg-primary transition-all duration-300"
+            className="absolute left-0 bottom-0 h-px bg-primary transition-all duration-100 ease-out"
             style={{ width: `${progress}%` }}
-          />
-
-          {/* Progress indicator */}
-          <div 
-            className="absolute top-1/2 h-4 w-0.5 -translate-y-1/2 bg-primary transition-all duration-300"
-            style={{ left: `${progress}%` }}
           />
 
           {/* Section markers */}
           {sections.map((section, index) => {
             const position = ((index + 1) / (sections.length + 1)) * 100;
-            const isPassed = progress >= position - 5;
+            const isPassed = progress >= position;
+            const isActive = activeSection === section.id;
             
             return (
               <button
                 key={section.id}
                 onClick={() => scrollToSection(section.id)}
-                className="group relative z-10 flex flex-col items-center"
-                style={{ position: 'absolute', left: `${position}%`, transform: 'translateX(-50%)' }}
+                className="group absolute bottom-0 flex flex-col items-center"
+                style={{ left: `${position}%`, transform: 'translateX(-50%)' }}
               >
-                {/* Label */}
+                {/* Handwritten label */}
                 <span 
-                  className={`mb-3 font-handwritten text-sm transition-colors ${
-                    activeSection === section.id ? 'text-foreground' : 'text-muted-foreground'
+                  className={`mb-2 font-handwritten text-lg tracking-wide transition-all duration-300 ${
+                    isActive ? 'text-foreground scale-110' : 'text-muted-foreground/70'
                   } group-hover:text-foreground`}
-                  style={{ fontFamily: "'Caveat', cursive" }}
                 >
                   {section.label}
                 </span>
                 
-                {/* X marker */}
-                <div className={`relative h-4 w-4 transition-colors ${isPassed ? 'text-primary' : 'text-muted-foreground/50'}`}>
-                  <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 rotate-45 bg-current" />
-                  <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 -rotate-45 bg-current" />
-                </div>
+                {/* X cross marker - handwritten style */}
+                <svg 
+                  width="16" 
+                  height="16" 
+                  viewBox="0 0 16 16" 
+                  className={`mb-[-1px] transition-all duration-300 ${
+                    isPassed ? 'text-foreground' : 'text-muted-foreground/50'
+                  } ${isActive ? 'scale-125' : ''} group-hover:text-foreground`}
+                >
+                  <line 
+                    x1="2" y1="2" x2="14" y2="14" 
+                    stroke="currentColor" 
+                    strokeWidth="1.5" 
+                    strokeLinecap="round"
+                    style={{ 
+                      strokeDasharray: isPassed ? '0' : '20',
+                      transition: 'stroke-dasharray 0.5s ease-out'
+                    }}
+                  />
+                  <line 
+                    x1="14" y1="2" x2="2" y2="14" 
+                    stroke="currentColor" 
+                    strokeWidth="1.5" 
+                    strokeLinecap="round"
+                    style={{ 
+                      strokeDasharray: isPassed ? '0' : '20',
+                      transition: 'stroke-dasharray 0.5s ease-out'
+                    }}
+                  />
+                </svg>
               </button>
             );
           })}
