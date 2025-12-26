@@ -21,9 +21,13 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Right side - Crimson red gradient with portrait */}
-        <div className="relative flex-1 bg-gradient-to-br from-primary to-primary-dark">
-          <img src={heroPortrait} alt="REDDOT - Video Editor Portrait" className="h-full w-full object-cover object-top" />
+        {/* Right side - Portrait with crimson background from image */}
+        <div className="relative flex-1 overflow-hidden">
+          <img 
+            src={heroPortrait} 
+            alt="REDDOT - Video Editor Portrait" 
+            className="h-full w-full object-cover object-center" 
+          />
         </div>
       </div>
     </section>;
