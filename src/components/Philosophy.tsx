@@ -1,8 +1,25 @@
+import { useEffect, useRef, useState } from 'react';
+
 const Philosophy = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="philosophy"
-      className="relative flex min-h-screen flex-col items-center justify-center bg-background px-6 py-24"
+      className={`relative flex min-h-screen flex-col items-center justify-center bg-background px-6 py-24 transition-all duration-700 ${
+        isVisible ? 'opacity-100 blur-0' : 'opacity-0 blur-md'
+      }`}
     >
       {/* Handwritten label */}
       <span className="mb-8 font-handwritten text-xl text-muted-foreground">
