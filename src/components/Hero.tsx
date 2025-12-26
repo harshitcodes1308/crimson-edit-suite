@@ -5,8 +5,8 @@ const Hero = () => {
         {/* Left side - Black with text */}
         <div className="relative flex flex-1 flex-col justify-center bg-background px-6 py-24 lg:px-12 lg:py-0">
           <div className="max-w-xl">
-            <h1 className="animate-fade-up font-display text-6xl font-bold leading-[0.9] tracking-tight text-foreground opacity-0 sm:text-7xl lg:text-8xl xl:text-9xl">CUTS. EDITS.
-STORIES.<br />
+            <h1 className="animate-fade-up font-display text-6xl font-bold leading-[0.9] tracking-tight text-foreground opacity-0 sm:text-7xl lg:text-8xl xl:text-9xl">CUTS. EDITS. STORIES.
+​<br />
               ​STORIES
             </h1>
 
