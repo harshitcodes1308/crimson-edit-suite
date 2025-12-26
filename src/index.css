@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=Caveat:wght@400;500&display=swap');
 
 @layer base {
   :root {
@@ -15,9 +15,8 @@
     --popover: 0 0% 4%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 0 85% 45%;
-    --primary-foreground: 0 0% 98%;
-    --primary-glow: 0 90% 55%;
+    --primary: 24 100% 50%;
+    --primary-foreground: 0 0% 0%;
 
     --secondary: 0 0% 8%;
     --secondary-foreground: 0 0% 98%;
@@ -25,30 +24,22 @@
     --muted: 0 0% 12%;
     --muted-foreground: 0 0% 55%;
 
-    --accent: 0 75% 40%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 24 100% 50%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
     --border: 0 0% 15%;
     --input: 0 0% 15%;
-    --ring: 0 85% 45%;
+    --ring: 24 100% 50%;
 
     --radius: 0.5rem;
 
-    /* Custom gradient variables */
-    --gradient-red: linear-gradient(135deg, hsl(0, 85%, 50%) 0%, hsl(0, 90%, 30%) 100%);
-    --gradient-red-hover: linear-gradient(135deg, hsl(0, 90%, 55%) 0%, hsl(0, 85%, 40%) 100%);
-    --gradient-dark: linear-gradient(180deg, hsl(0, 0%, 0%) 0%, hsl(0, 0%, 4%) 100%);
-
-    /* Typography */
-    --font-display: 'Syne', sans-serif;
+    /* Custom */
+    --font-display: 'Bebas Neue', sans-serif;
     --font-body: 'Inter', sans-serif;
-
-    /* Shadows */
-    --shadow-glow: 0 0 60px hsl(0 85% 45% / 0.3);
-    --shadow-subtle: 0 4px 30px hsl(0 0% 0% / 0.5);
+    --font-handwritten: 'Caveat', cursive;
   }
 
   .dark {
@@ -58,19 +49,19 @@
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 4%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 85% 45%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 24 100% 50%;
+    --primary-foreground: 0 0% 0%;
     --secondary: 0 0% 8%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 12%;
     --muted-foreground: 0 0% 55%;
-    --accent: 0 75% 40%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 24 100% 50%;
+    --accent-foreground: 0 0% 0%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 15%;
     --input: 0 0% 15%;
-    --ring: 0 85% 45%;
+    --ring: 24 100% 50%;
   }
 }
 
@@ -84,43 +75,26 @@
   }
 
   body {
-    @apply bg-background text-foreground font-body antialiased;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display;
+    font-family: var(--font-display);
   }
 }
 
 @layer components {
-  .text-gradient-red {
-    @apply bg-clip-text text-transparent;
-    background-image: var(--gradient-red);
+  .font-display {
+    font-family: var(--font-display);
   }
 
-  .bg-gradient-red {
-    background-image: var(--gradient-red);
+  .font-body {
+    font-family: var(--font-body);
   }
 
-  .bg-gradient-red-hover {
-    background-image: var(--gradient-red-hover);
-  }
-
-  .glow-red {
-    box-shadow: var(--shadow-glow);
-  }
-
-  .line-accent {
-    @apply relative;
-  }
-
-  .line-accent::after {
-    content: '';
-    @apply absolute bottom-0 left-0 h-[2px] w-0 bg-primary transition-all duration-500;
-  }
-
-  .line-accent:hover::after {
-    @apply w-full;
+  .font-handwritten {
+    font-family: var(--font-handwritten);
   }
 }
 
@@ -131,10 +105,6 @@
 
   .animate-fade-in {
     animation: fadeIn 0.6s ease-out forwards;
-  }
-
-  .animate-slide-in {
-    animation: slideIn 0.6s ease-out forwards;
   }
 
   .animation-delay-100 {
@@ -175,17 +145,6 @@
   }
   to {
     opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
   }
 }
 
