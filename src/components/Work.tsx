@@ -20,17 +20,27 @@ interface ProjectProps {
 }
 
 const getYouTubeEmbedUrl = (url: string) => {
-  // Handle YouTube Shorts URLs
-  const shortsMatch = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
-  if (shortsMatch) {
-    return `https://www.youtube.com/embed/${shortsMatch[1]}?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=${shortsMatch[1]}`;
-  }
-  // Handle regular YouTube URLs
-  const regularMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
-  if (regularMatch) {
-    return `https://www.youtube.com/embed/${regularMatch[1]}?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=${regularMatch[1]}`;
-  }
-  return url;
+  // Supports Shorts, watch URLs, youtu.be, and existing /embed links.
+  const idMatch = url.match(
+    /(?:youtube\.com\/(?:shorts\/|watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/
+  );
+  const videoId = idMatch?.[1];
+
+  if (!videoId) return url;
+
+  const params = new URLSearchParams({
+    enablejsapi: '1',
+    autoplay: '1',
+    mute: '1',
+    playsinline: '1',
+    controls: '0',
+    rel: '0',
+    modestbranding: '1',
+    loop: '1',
+    playlist: videoId,
+  });
+
+  return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
 };
 
 const getInstagramEmbedUrl = (url: string) => {
@@ -178,14 +188,14 @@ const projects = [
     id: 'project-1',
     title: "TOPPER VS AVERAGE STUDENT",
     description: "Short-form edit created for social platforms. ICSE Tips and strategies for Class 10 students.",
-    videoUrl: "https://youtube.com/shorts/example1",
+    videoUrl: "https://www.youtube.com/shorts/mJJOzByneGg",
     platform: 'youtube' as const,
   },
   {
     id: 'project-2',
     title: "HOW TO COMPLETE SYLLABUS",
     description: "Short-form edit created for social platforms. ICSE strategy and tips for December completion.",
-    videoUrl: "https://youtube.com/shorts/example2",
+    videoUrl: "https://www.youtube.com/shorts/NU5WRrqj0tM",
     platform: 'youtube' as const,
   },
   {
