@@ -1,56 +1,173 @@
-import { Play } from 'lucide-react';
+import { useState, useEffect, useRef, createContext, useContext } from 'react';
+import { ExternalLink, Volume2, VolumeX } from 'lucide-react';
+
+// Context for blur effect
+const VideoFocusContext = createContext<{
+  focusedVideo: string | null;
+  setFocusedVideo: (id: string | null) => void;
+}>({
+  focusedVideo: null,
+  setFocusedVideo: () => {},
+});
 
 interface ProjectProps {
+  id: string;
   title: string;
   description: string;
-  credits: { role: string; name: string }[];
+  videoUrl: string;
+  platform: 'youtube' | 'instagram';
   isReversed?: boolean;
 }
 
-const Project = ({ title, description, credits, isReversed = false }: ProjectProps) => {
+const getYouTubeEmbedUrl = (url: string) => {
+  // Handle YouTube Shorts URLs
+  const shortsMatch = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
+  if (shortsMatch) {
+    return `https://www.youtube.com/embed/${shortsMatch[1]}?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=${shortsMatch[1]}`;
+  }
+  // Handle regular YouTube URLs
+  const regularMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+  if (regularMatch) {
+    return `https://www.youtube.com/embed/${regularMatch[1]}?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=${regularMatch[1]}`;
+  }
+  return url;
+};
+
+const getInstagramEmbedUrl = (url: string) => {
+  // Extract Instagram reel ID and create embed URL
+  const match = url.match(/instagram\.com\/reel\/([a-zA-Z0-9_-]+)/);
+  if (match) {
+    return `https://www.instagram.com/reel/${match[1]}/embed`;
+  }
+  return url;
+};
+
+const getExternalUrl = (url: string, platform: 'youtube' | 'instagram') => {
+  if (platform === 'youtube') {
+    const shortsMatch = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
+    if (shortsMatch) return `https://youtube.com/shorts/${shortsMatch[1]}`;
+    const regularMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+    if (regularMatch) return `https://youtube.com/watch?v=${regularMatch[1]}`;
+  }
+  return url;
+};
+
+const Project = ({ id, title, description, videoUrl, platform, isReversed = false }: ProjectProps) => {
+  const [isInView, setIsInView] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const { focusedVideo, setFocusedVideo } = useContext(VideoFocusContext);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setFocusedVideo(id);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [id, setFocusedVideo]);
+
+  const embedUrl = platform === 'youtube' 
+    ? getYouTubeEmbedUrl(videoUrl)
+    : getInstagramEmbedUrl(videoUrl);
+
+  const externalUrl = getExternalUrl(videoUrl, platform);
+
+  const handleMuteToggle = () => {
+    setIsMuted(!isMuted);
+    // For YouTube, we can control via postMessage
+    if (platform === 'youtube' && iframeRef.current) {
+      iframeRef.current.contentWindow?.postMessage(
+        JSON.stringify({ event: 'command', func: isMuted ? 'unMute' : 'mute' }),
+        '*'
+      );
+    }
+  };
+
+  const isFocused = focusedVideo === id;
+
   return (
-    <div className={`flex flex-col gap-8 lg:flex-row lg:gap-12 ${isReversed ? 'lg:flex-row-reverse' : ''}`}>
-      {/* Video placeholder */}
-      <div className="relative aspect-video w-full flex-shrink-0 lg:w-[60%]">
-        <div className="group relative h-full w-full overflow-hidden bg-card">
-          {/* Video thumbnail placeholder */}
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-card to-muted/30">
-            <div className="flex flex-col items-center">
-              <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full border border-foreground/20 transition-all group-hover:border-foreground/40 group-hover:scale-110">
-                <Play className="h-6 w-6 text-foreground/60 transition-colors group-hover:text-foreground" />
-              </div>
-              <span className="text-xs text-muted-foreground">Video Placeholder</span>
-            </div>
-          </div>
+    <div 
+      ref={containerRef}
+      className={`flex flex-col gap-8 lg:flex-row lg:gap-12 transition-all duration-500 ${
+        isReversed ? 'lg:flex-row-reverse' : ''
+      } ${focusedVideo && !isFocused ? 'opacity-30 blur-sm' : 'opacity-100 blur-0'}`}
+      onMouseEnter={() => {
+        setIsHovered(true);
+        setFocusedVideo(id);
+      }}
+      onMouseLeave={() => {
+        setIsHovered(false);
+      }}
+    >
+      {/* Video container */}
+      <div className="relative aspect-[9/16] w-full max-w-[300px] mx-auto flex-shrink-0 lg:max-w-[280px]">
+        <div className="group relative h-full w-full overflow-hidden bg-card rounded-lg">
+          {isInView && (
+            <iframe
+              ref={iframeRef}
+              src={embedUrl}
+              className="absolute inset-0 h-full w-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title={title}
+            />
+          )}
           
-          {/* Vimeo-style controls bar */}
-          <div className="absolute bottom-0 left-0 right-0 flex items-center gap-4 bg-gradient-to-t from-background/80 to-transparent p-4">
-            <Play className="h-4 w-4 text-foreground/80" />
-            <div className="h-1 flex-1 rounded-full bg-foreground/20">
-              <div className="h-full w-1/3 rounded-full bg-primary" />
+          {/* Overlay controls */}
+          <div 
+            className={`absolute inset-0 flex flex-col items-center justify-between p-4 bg-gradient-to-t from-background/80 via-transparent to-background/40 transition-opacity duration-300 ${
+              isHovered ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            {/* Top controls */}
+            <div className="flex w-full justify-end">
+              <button
+                onClick={handleMuteToggle}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-background/60 backdrop-blur-sm transition-all hover:bg-background/80"
+              >
+                {isMuted ? (
+                  <VolumeX className="h-5 w-5 text-foreground" />
+                ) : (
+                  <Volume2 className="h-5 w-5 text-foreground" />
+                )}
+              </button>
             </div>
-            <span className="text-xs text-foreground/60">00:00 / 03:42</span>
+            
+            {/* Bottom controls */}
+            <a
+              href={externalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-medium uppercase tracking-wider text-primary-foreground transition-all hover:bg-primary/90"
+            >
+              <span>Open on {platform === 'youtube' ? 'YouTube' : 'Instagram'}</span>
+              <ExternalLink className="h-3 w-3" />
+            </a>
           </div>
         </div>
       </div>
 
       {/* Project info */}
-      <div className="flex flex-col justify-center lg:w-[40%]">
+      <div className="flex flex-col justify-center lg:flex-1">
         <h3 className="mb-4 font-display text-xl font-bold uppercase tracking-wide text-foreground lg:text-2xl">
           {title}
         </h3>
         
-        <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+        <p className="text-sm leading-relaxed text-muted-foreground">
           {description}
         </p>
-
-        <div className="space-y-1">
-          {credits.map((credit, index) => (
-            <p key={index} className="text-xs text-muted-foreground">
-              <span className="text-foreground/60">{credit.role}:</span> {credit.name}
-            </p>
-          ))}
-        </div>
       </div>
     </div>
   );
@@ -58,92 +175,79 @@ const Project = ({ title, description, credits, isReversed = false }: ProjectPro
 
 const projects = [
   {
-    title: "EUPHORIA",
-    description: "The ongoing short film series was created through a purely improvisational approach. There were and are no scripts, pre-developed story elements, or meticulously planned camera setups. Instead, each chapter emerges from the spontaneous, unfiltered collaboration of all participants—driven by creative openness and the synergy of artistic spontaneity.",
-    credits: [
-      { role: "Director & DP", name: "Matt Schoemer" },
-      { role: "Production", name: "Atelier hayuma" },
-      { role: "Editor", name: "REDDOT" },
-      { role: "Colorgrading", name: "Johan Nurmilehto" },
-      { role: "Sound Design", name: "Julian Lindenmann" },
-      { role: "Music", name: "Marcel Hieß" },
-      { role: "Talents", name: "Hanna Erz, Yulef Bopp" },
-    ]
+    id: 'project-1',
+    title: "TOPPER VS AVERAGE STUDENT",
+    description: "Short-form edit created for social platforms. ICSE Tips and strategies for Class 10 students.",
+    videoUrl: "https://youtube.com/shorts/example1",
+    platform: 'youtube' as const,
   },
   {
-    title: "SEEING INTO THE MIND'S EYE",
-    description: "In this Spec Marcus Sies and Flo Nick check out the C500 MarkII. Inspired by one of the most influential photographers they capture a stunning journey from underneath the water to above the clouds.",
-    credits: [
-      { role: "Director", name: "Marcus Sies" },
-      { role: "Director of Photography", name: "Florian Nick" },
-      { role: "Underwater camera", name: "Nicolai Deutsch & Sarah Gauthier" },
-      { role: "Editing", name: "REDDOT" },
-      { role: "Sounddesign", name: "Romain Kuhn" },
-      { role: "Music", name: "Maxime Lacoste-Lebuis" },
-    ]
+    id: 'project-2',
+    title: "HOW TO COMPLETE SYLLABUS",
+    description: "Short-form edit created for social platforms. ICSE strategy and tips for December completion.",
+    videoUrl: "https://youtube.com/shorts/example2",
+    platform: 'youtube' as const,
   },
   {
-    title: "HUBER – IRRITIERENDE VERFREMDUNG",
-    description: "Origin shining light and casting shadows. The accomplished german artist Stephan Huber lets us take a look behind the curtains. Director Matt Schömer and DoP Josua Stäbler convert the information in stunning visual style.",
-    credits: [
-      { role: "Director", name: "Matt Schömer" },
-      { role: "Director of Photography", name: "Josua Stäbler" },
-      { role: "Editing", name: "REDDOT" },
-      { role: "Colorgrading", name: "fatrat Color Grading" },
-      { role: "Sounddesign", name: "REDDOT" },
-      { role: "Soundmixing", name: "PeterHacker" },
-      { role: "Talent", name: "Stephan Huber" },
-    ]
+    id: 'project-3',
+    title: "REEL EDIT 1",
+    description: "Short-form edit created for social platforms.",
+    videoUrl: "https://www.instagram.com/reel/DSUSTJOkxjC/",
+    platform: 'instagram' as const,
   },
   {
-    title: "CHRISTOPHER ROWNES | PASSION FOR MOVEMENT",
-    description: "When passion leads through life, everything can change and yet remain connected in a set of parallels. It won't be the passion that changes but only the appearance of that passion.",
-    credits: [
-      { role: "Production Company", name: "FLYFOCUS" },
-      { role: "Producer", name: "Benjamin Laschett" },
-      { role: "Director", name: "Marcus Sies" },
-      { role: "Director of Photography", name: "Marcus Sies" },
-      { role: "Editing", name: "REDDOT" },
-      { role: "Colorgrading", name: "Marcus Sies" },
-      { role: "Sounddesign", name: "Julian Lindenmann" },
-    ]
+    id: 'project-4',
+    title: "REEL EDIT 2",
+    description: "Short-form edit created for social platforms.",
+    videoUrl: "https://www.instagram.com/reel/DSC2dOYE6Q1/",
+    platform: 'instagram' as const,
+  },
+  {
+    id: 'project-5',
+    title: "REEL EDIT 3",
+    description: "Short-form edit created for social platforms.",
+    videoUrl: "https://www.instagram.com/reel/DSfMrI_E4fj/",
+    platform: 'instagram' as const,
   }
 ];
 
 const Work = () => {
+  const [focusedVideo, setFocusedVideo] = useState<string | null>(null);
+
   return (
-    <section
-      id="work"
-      className="relative bg-background px-6 py-24 lg:px-12 lg:py-32"
-    >
-      {/* Handwritten label */}
-      <div className="mb-8 text-center">
-        <span 
-          className="font-handwritten text-xl text-muted-foreground"
-          style={{ fontFamily: "'Caveat', cursive" }}
-        >
-          work
-        </span>
-      </div>
+    <VideoFocusContext.Provider value={{ focusedVideo, setFocusedVideo }}>
+      <section
+        id="work"
+        className="relative bg-background px-6 py-24 lg:px-12 lg:py-32"
+      >
+        {/* Handwritten label */}
+        <div className="mb-8 text-center">
+          <span className="font-handwritten text-xl text-muted-foreground">
+            work
+          </span>
+        </div>
 
-      {/* Section title */}
-      <h2 className="mb-16 text-center font-display text-3xl font-bold uppercase tracking-wide text-foreground lg:text-4xl">
-        LATEST PROJECTS
-      </h2>
+        {/* Section title */}
+        <h2 className="mb-16 text-center font-display text-3xl font-bold uppercase tracking-wide text-foreground lg:text-4xl">
+          LATEST PROJECTS
+        </h2>
 
-      {/* Projects */}
-      <div className="mx-auto max-w-6xl space-y-24 lg:space-y-32">
-        {projects.map((project, index) => (
-          <Project
-            key={project.title}
-            title={project.title}
-            description={project.description}
-            credits={project.credits}
-            isReversed={index % 2 !== 0}
-          />
-        ))}
-      </div>
-    </section>
+        {/* Projects */}
+        <div className="mx-auto max-w-6xl space-y-24 lg:space-y-32">
+          {projects.map((project, index) => (
+            <Project
+              key={project.id}
+              id={project.id}
+              title={project.title}
+              description={project.description}
+              videoUrl={project.videoUrl}
+              platform={project.platform}
+              isReversed={index % 2 !== 0}
+            />
+          ))}
+        </div>
+      </section>
+    </VideoFocusContext.Provider>
   );
 };
 
