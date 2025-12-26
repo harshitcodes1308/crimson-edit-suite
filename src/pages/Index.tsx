@@ -6,10 +6,12 @@ import Work from '@/components/Work';
 import Purpose from '@/components/Purpose';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
+import GradientBackground from '@/components/GradientBackground';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen">
+      <GradientBackground />
       <ScrollProgress />
       <Header />
       <main>
