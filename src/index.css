@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=Giovanna+Handwriting&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=Reenie+Beanie&display=swap');
 
 @layer base {
   :root {
@@ -40,7 +40,7 @@
     /* Custom */
     --font-display: 'Bebas Neue', sans-serif;
     --font-body: 'Inter', sans-serif;
-    --font-handwritten: 'Giovanna Handwriting', cursive;
+    --font-handwritten: 'Reenie Beanie', cursive;
     
     /* Gradient colors */
     --gold: 38 80% 45%;
