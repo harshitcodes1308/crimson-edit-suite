@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 const sections = [
   { id: 'philosophy', label: 'philosophy' },
@@ -8,9 +8,60 @@ const sections = [
   { id: 'contact', label: 'contact' },
 ];
 
+interface SectionPosition {
+  id: string;
+  label: string;
+  start: number; // percentage position on the page
+  markerPos: number; // percentage position on the progress bar
+}
+
 const ScrollProgress = () => {
   const [progress, setProgress] = useState(0);
   const [activeSection, setActiveSection] = useState('');
+  const [sectionPositions, setSectionPositions] = useState<SectionPosition[]>([]);
+
+  // Calculate section positions based on actual DOM positions
+  const calculateSectionPositions = useCallback(() => {
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (docHeight <= 0) return;
+
+    const positions: SectionPosition[] = [];
+    
+    sections.forEach((section) => {
+      const element = document.getElementById(section.id);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        const elementTop = window.scrollY + rect.top;
+        // Calculate where this section starts as a percentage of total scrollable area
+        const startPercent = Math.min((elementTop / docHeight) * 100, 100);
+        
+        positions.push({
+          id: section.id,
+          label: section.label,
+          start: startPercent,
+          markerPos: startPercent,
+        });
+      }
+    });
+
+    setSectionPositions(positions);
+  }, []);
+
+  useEffect(() => {
+    // Initial calculation
+    calculateSectionPositions();
+    
+    // Recalculate on resize
+    window.addEventListener('resize', calculateSectionPositions);
+    
+    // Recalculate after a short delay to ensure DOM is ready
+    const timeout = setTimeout(calculateSectionPositions, 500);
+
+    return () => {
+      window.removeEventListener('resize', calculateSectionPositions);
+      clearTimeout(timeout);
+    };
+  }, [calculateSectionPositions]);
 
   useEffect(() => {
     const updateProgress = () => {
@@ -19,16 +70,19 @@ const ScrollProgress = () => {
       const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
       setProgress(scrollPercent);
 
-      // Determine active section
+      // Determine active section based on viewport center
+      let currentActive = '';
       sections.forEach((section) => {
         const element = document.getElementById(section.id);
         if (element) {
           const rect = element.getBoundingClientRect();
-          if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
-            setActiveSection(section.id);
+          // Section is active when its top half is in view
+          if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 4) {
+            currentActive = section.id;
           }
         }
       });
+      setActiveSection(currentActive);
     };
 
     window.addEventListener('scroll', updateProgress, { passive: true });
@@ -53,14 +107,13 @@ const ScrollProgress = () => {
           
           {/* Active progress line */}
           <div 
-            className="absolute left-0 bottom-0 h-px bg-primary transition-all duration-100 ease-out"
-            style={{ width: `${progress}%` }}
+            className="absolute left-0 bottom-0 h-px bg-primary transition-all duration-150 ease-out"
+            style={{ width: `${Math.min(progress, 100)}%` }}
           />
 
-          {/* Section markers */}
-          {sections.map((section, index) => {
-            const position = ((index + 1) / (sections.length + 1)) * 100;
-            const isPassed = progress >= position;
+          {/* Section markers - positioned based on actual section positions */}
+          {sectionPositions.map((section) => {
+            const isPassed = progress >= section.markerPos - 5; // Small threshold for smoother activation
             const isActive = activeSection === section.id;
             
             return (
@@ -68,7 +121,7 @@ const ScrollProgress = () => {
                 key={section.id}
                 onClick={() => scrollToSection(section.id)}
                 className="group absolute bottom-0 flex flex-col items-center"
-                style={{ left: `${position}%`, transform: 'translateX(-50%)' }}
+                style={{ left: `${section.markerPos}%`, transform: 'translateX(-50%)' }}
               >
                 {/* Handwritten label */}
                 <span 
