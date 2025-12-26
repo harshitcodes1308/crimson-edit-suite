@@ -22,49 +22,41 @@ const Header = () => {
   return (
     <header
       className={`fixed left-0 right-0 top-0 z-40 transition-all duration-500 ${
-        isScrolled ? 'bg-background/90 backdrop-blur-md' : 'bg-transparent'
+        isScrolled ? 'bg-background/80 backdrop-blur-md' : 'bg-transparent'
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between px-6 py-5 lg:px-12">
+      <div className="flex items-center justify-between px-6 py-4 lg:px-12">
         <div className="flex flex-col">
-          <span className="font-display text-lg font-bold tracking-tight text-foreground lg:text-xl">
-            [EDITOR NAME]
+          <span className="font-display text-xl font-bold tracking-tight text-foreground lg:text-2xl">
+            REDDOT
           </span>
-          <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-            Video Editor
+          <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+            Freelance Video Editor
           </span>
         </div>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="flex items-center gap-6">
           <button
             onClick={() => scrollToSection('work')}
-            className="line-accent text-sm font-medium uppercase tracking-wider text-foreground/80 transition-colors hover:text-foreground"
+            className="text-xs font-medium uppercase tracking-wider text-foreground/80 transition-colors hover:text-foreground"
           >
             Work
           </button>
           <button
-            onClick={() => scrollToSection('about')}
-            className="line-accent text-sm font-medium uppercase tracking-wider text-foreground/80 transition-colors hover:text-foreground"
+            onClick={() => scrollToSection('purpose')}
+            className="text-xs font-medium uppercase tracking-wider text-foreground/80 transition-colors hover:text-foreground"
           >
-            About
+            CV
           </button>
-          <span className="h-4 w-px bg-border" />
+          <span className="hidden h-4 w-px bg-border sm:block" />
           <button
             onClick={() => scrollToSection('contact')}
-            className="group flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-foreground/80 transition-colors hover:text-foreground"
+            className="group flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-primary transition-colors hover:text-primary/80"
           >
-            <span className="h-2 w-2 rounded-full bg-primary transition-transform group-hover:scale-125" />
+            <span className="h-2 w-2 rounded-full bg-primary" />
             Contact Me
           </button>
         </nav>
-
-        {/* Mobile menu button */}
-        <button
-          className="flex h-10 w-10 items-center justify-center md:hidden"
-          onClick={() => scrollToSection('contact')}
-        >
-          <span className="h-2 w-2 rounded-full bg-primary" />
-        </button>
       </div>
     </header>
   );
