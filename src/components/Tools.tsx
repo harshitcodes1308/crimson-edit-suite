@@ -35,8 +35,8 @@ const Tools = () => {
       </div>
 
       {/* Section title - regular font like other titles */}
-      <h2 className="mb-16 text-center font-display text-3xl font-bold uppercase tracking-wide text-foreground lg:text-4xl">
-        TOOLS I WORK WITH
+      <h2 className="mb-16 text-center font-handwritten text-4xl text-foreground lg:text-5xl">
+        tools i work with
       </h2>
 
       <div className="relative">
