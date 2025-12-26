@@ -1,9 +1,7 @@
 const Purpose = () => {
   return <section id="purpose" className="relative flex min-h-screen flex-col items-center justify-center bg-background px-6 py-24">
       {/* Handwritten label */}
-      <span className="mb-8 font-handwritten text-xl text-muted-foreground" style={{
-      fontFamily: "'Caveat', cursive"
-    }}>
+      <span className="mb-8 font-handwritten text-xl text-muted-foreground">
         purpose
       </span>
 
