@@ -5,25 +5,33 @@ import davinciResolve from '@/assets/tools/davinci-resolve.svg';
 import gemini from '@/assets/tools/gemini.svg';
 import perplexity from '@/assets/tools/perplexity.svg';
 import sora from '@/assets/tools/sora.svg';
-
-const tools = [
-  { name: 'DaVinci Resolve', src: davinciResolve },
-  { name: 'After Effects', src: afterEffects },
-  { name: 'Canva', src: canva },
-  { name: 'ChatGPT', src: chatgpt },
-  { name: 'Gemini', src: gemini },
-  { name: 'Perplexity', src: perplexity },
-  { name: 'Sora', src: sora },
-];
-
+const tools = [{
+  name: 'DaVinci Resolve',
+  src: davinciResolve
+}, {
+  name: 'After Effects',
+  src: afterEffects
+}, {
+  name: 'Canva',
+  src: canva
+}, {
+  name: 'ChatGPT',
+  src: chatgpt
+}, {
+  name: 'Gemini',
+  src: gemini
+}, {
+  name: 'Perplexity',
+  src: perplexity
+}, {
+  name: 'Sora',
+  src: sora
+}];
 const Tools = () => {
-  return (
-    <section id="tools" className="relative overflow-hidden border-t border-border/30 py-20 lg:py-28">
+  return <section id="tools" className="relative overflow-hidden border-t border-border/30 py-20 lg:py-28">
       {/* Handwritten label */}
       <div className="mb-4 text-center">
-        <span className="font-handwritten text-xl text-muted-foreground">
-          tools
-        </span>
+        
       </div>
 
       {/* Section title - regular font like other titles */}
@@ -39,43 +47,21 @@ const Tools = () => {
         <div className="flex items-center justify-center overflow-hidden">
           <div className="flex animate-marquee items-center">
             {/* First set */}
-            {tools.map((tool) => (
-              <div 
-                key={`first-${tool.name}`} 
-                className="mx-8 flex shrink-0 flex-col items-center gap-3 md:mx-12"
-              >
+            {tools.map(tool => <div key={`first-${tool.name}`} className="mx-8 flex shrink-0 flex-col items-center gap-3 md:mx-12">
                 <div className="flex h-14 w-14 items-center justify-center md:h-16 md:w-16">
-                  <img
-                    src={tool.src}
-                    alt={`${tool.name} logo`}
-                    loading="lazy"
-                    className="h-full w-full object-contain opacity-70 brightness-0 invert transition-all duration-300 hover:opacity-100 hover:scale-110"
-                  />
+                  <img src={tool.src} alt={`${tool.name} logo`} loading="lazy" className="h-full w-full object-contain opacity-70 brightness-0 invert transition-all duration-300 hover:opacity-100 hover:scale-110" />
                 </div>
-              </div>
-            ))}
+              </div>)}
 
             {/* Second set for seamless loop */}
-            {tools.map((tool) => (
-              <div 
-                key={`second-${tool.name}`} 
-                className="mx-8 flex shrink-0 flex-col items-center gap-3 md:mx-12"
-              >
+            {tools.map(tool => <div key={`second-${tool.name}`} className="mx-8 flex shrink-0 flex-col items-center gap-3 md:mx-12">
                 <div className="flex h-14 w-14 items-center justify-center md:h-16 md:w-16">
-                  <img
-                    src={tool.src}
-                    alt={`${tool.name} logo`}
-                    loading="lazy"
-                    className="h-full w-full object-contain opacity-70 brightness-0 invert transition-all duration-300 hover:opacity-100 hover:scale-110"
-                  />
+                  <img src={tool.src} alt={`${tool.name} logo`} loading="lazy" className="h-full w-full object-contain opacity-70 brightness-0 invert transition-all duration-300 hover:opacity-100 hover:scale-110" />
                 </div>
-              </div>
-            ))}
+              </div>)}
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Tools;
