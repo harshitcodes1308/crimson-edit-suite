@@ -26,7 +26,7 @@ const Tools = () => {
         </span>
       </div>
 
-      {/* Section title - matching other titles */}
+      {/* Section title - regular font like other titles */}
       <h2 className="mb-16 text-center font-display text-3xl font-bold uppercase tracking-wide text-foreground lg:text-4xl">
         TOOLS I WORK WITH
       </h2>
@@ -37,14 +37,14 @@ const Tools = () => {
         <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-24 bg-gradient-to-l from-background to-transparent md:w-40" />
 
         <div className="flex items-center justify-center overflow-hidden">
-          <div className="flex animate-scroll items-center">
+          <div className="flex animate-marquee items-center">
             {/* First set */}
             {tools.map((tool) => (
               <div 
                 key={`first-${tool.name}`} 
                 className="mx-8 flex shrink-0 flex-col items-center gap-3 md:mx-12"
               >
-                <div className="flex h-16 w-16 items-center justify-center md:h-20 md:w-20">
+                <div className="flex h-14 w-14 items-center justify-center md:h-16 md:w-16">
                   <img
                     src={tool.src}
                     alt={`${tool.name} logo`}
@@ -52,9 +52,6 @@ const Tools = () => {
                     className="h-full w-full object-contain opacity-70 brightness-0 invert transition-all duration-300 hover:opacity-100 hover:scale-110"
                   />
                 </div>
-                <span className="text-xs text-muted-foreground/60 md:text-sm">
-                  {tool.name}
-                </span>
               </div>
             ))}
 
@@ -64,7 +61,7 @@ const Tools = () => {
                 key={`second-${tool.name}`} 
                 className="mx-8 flex shrink-0 flex-col items-center gap-3 md:mx-12"
               >
-                <div className="flex h-16 w-16 items-center justify-center md:h-20 md:w-20">
+                <div className="flex h-14 w-14 items-center justify-center md:h-16 md:w-16">
                   <img
                     src={tool.src}
                     alt={`${tool.name} logo`}
@@ -72,9 +69,6 @@ const Tools = () => {
                     className="h-full w-full object-contain opacity-70 brightness-0 invert transition-all duration-300 hover:opacity-100 hover:scale-110"
                   />
                 </div>
-                <span className="text-xs text-muted-foreground/60 md:text-sm">
-                  {tool.name}
-                </span>
               </div>
             ))}
           </div>
