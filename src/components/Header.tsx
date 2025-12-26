@@ -44,10 +44,14 @@ const Header = () => {
           </button>
           <span className="hidden h-4 w-px bg-border sm:block" />
           <a
-            href="https://wa.me/+918006798525"
+            href="https://wa.me/918006798525"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-primary transition-colors hover:text-primary/80"
+            className="group flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-primary transition-colors hover:text-primary/80 cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open('https://wa.me/918006798525', '_blank');
+            }}
           >
             <span className="h-2 w-2 rounded-full bg-primary" />
             Contact Me
