@@ -12,9 +12,7 @@ const Purpose = () => {
           <p className="font-display text-2xl font-bold uppercase leading-tight tracking-wide text-foreground sm:text-3xl lg:text-4xl xl:text-5xl">„TURNING RAW FOOTAGE INTO SCROLL-STOPPING STORIES.."</p>
         </blockquote>
 
-        <p className="mx-auto mt-8 max-w-lg text-sm leading-relaxed text-muted-foreground lg:text-base">
-          Environmentally-conscious projects deserve special attention and will be met by me in this way. Get in touch so we can work out a tailored offer.
-        </p>
+        <p className="mx-auto mt-8 max-w-lg text-sm leading-relaxed text-muted-foreground lg:text-base">I craft high-energy, clean, and engaging edits that boost retention, elevate brands, and convert viewers into followers.</p>
       </div>
     </section>;
 };
