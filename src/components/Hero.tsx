@@ -5,10 +5,10 @@ const Hero = () => {
         {/* Left side - Black with text */}
         <div className="relative flex flex-1 flex-col justify-center bg-background px-6 py-24 lg:px-12 lg:py-0">
           <div className="max-w-xl">
-            <h1 className="animate-fade-up font-display text-6xl font-bold leading-[0.9] tracking-tight text-foreground opacity-0 sm:text-7xl lg:text-8xl xl:text-9xl">
-              CUTS.<br />
-              EDITS.<br />
-              STORIES.
+            <h1 className="animate-fade-up font-display text-6xl font-bold leading-[0.9] tracking-tight opacity-0 sm:text-7xl lg:text-8xl xl:text-9xl">
+              <span className="text-foreground">CUTS.</span><br />
+              <span className="text-foreground">EDITS.</span><br />
+              <span className="text-primary">STORIES.</span>
             </h1>
 
             <p className="mt-8 animate-fade-up text-sm leading-relaxed text-muted-foreground opacity-0 animation-delay-200 lg:text-base">

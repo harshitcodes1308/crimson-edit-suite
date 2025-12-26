@@ -1,6 +1,12 @@
 import { useState, useEffect, useRef, createContext, useContext } from 'react';
 import { ExternalLink, Volume2, VolumeX } from 'lucide-react';
 
+// Import local video files
+import reel01 from '@/assets/videos/reel-01.mp4';
+import reel02 from '@/assets/videos/reel-02.mp4';
+import reel03 from '@/assets/videos/reel-03.mp4';
+import reel04 from '@/assets/videos/reel-04.mp4';
+
 // Context for blur effect
 const VideoFocusContext = createContext<{
   focusedVideo: string | null;
@@ -15,12 +21,11 @@ interface ProjectProps {
   title: string;
   description: string;
   videoUrl: string;
-  platform: 'youtube' | 'instagram';
+  platform: 'youtube' | 'local';
   isReversed?: boolean;
 }
 
 const getYouTubeEmbedUrl = (url: string) => {
-  // Supports Shorts, watch URLs, youtu.be, and existing /embed links.
   const idMatch = url.match(
     /(?:youtube\.com\/(?:shorts\/|watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/
   );
@@ -43,16 +48,7 @@ const getYouTubeEmbedUrl = (url: string) => {
   return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
 };
 
-const getInstagramEmbedUrl = (url: string) => {
-  // Extract Instagram reel ID and create embed URL
-  const match = url.match(/instagram\.com\/reel\/([a-zA-Z0-9_-]+)/);
-  if (match) {
-    return `https://www.instagram.com/reel/${match[1]}/embed`;
-  }
-  return url;
-};
-
-const getExternalUrl = (url: string, platform: 'youtube' | 'instagram') => {
+const getExternalUrl = (url: string, platform: 'youtube' | 'local') => {
   if (platform === 'youtube') {
     const shortsMatch = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
     if (shortsMatch) return `https://youtube.com/shorts/${shortsMatch[1]}`;
@@ -67,6 +63,7 @@ const Project = ({ id, title, description, videoUrl, platform, isReversed = fals
   const [isHovered, setIsHovered] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { focusedVideo, setFocusedVideo } = useContext(VideoFocusContext);
 
@@ -90,14 +87,15 @@ const Project = ({ id, title, description, videoUrl, platform, isReversed = fals
 
   const embedUrl = platform === 'youtube' 
     ? getYouTubeEmbedUrl(videoUrl)
-    : getInstagramEmbedUrl(videoUrl);
+    : videoUrl;
 
   const externalUrl = getExternalUrl(videoUrl, platform);
 
   const handleMuteToggle = () => {
     setIsMuted(!isMuted);
-    // For YouTube, we can control via postMessage
-    if (platform === 'youtube' && iframeRef.current) {
+    if (platform === 'local' && videoRef.current) {
+      videoRef.current.muted = !isMuted;
+    } else if (platform === 'youtube' && iframeRef.current) {
       iframeRef.current.contentWindow?.postMessage(
         JSON.stringify({ event: 'command', func: isMuted ? 'unMute' : 'mute' }),
         '*'
@@ -124,7 +122,18 @@ const Project = ({ id, title, description, videoUrl, platform, isReversed = fals
       {/* Video container */}
       <div className="relative aspect-[9/16] w-full max-w-[300px] mx-auto flex-shrink-0 lg:max-w-[280px]">
         <div className="group relative h-full w-full overflow-hidden bg-card rounded-lg">
-          {isInView && (
+          {isInView && platform === 'local' && (
+            <video
+              ref={videoRef}
+              src={videoUrl}
+              className="absolute inset-0 h-full w-full object-cover"
+              autoPlay
+              loop
+              muted={isMuted}
+              playsInline
+            />
+          )}
+          {isInView && platform === 'youtube' && (
             <iframe
               ref={iframeRef}
               src={embedUrl}
@@ -155,16 +164,18 @@ const Project = ({ id, title, description, videoUrl, platform, isReversed = fals
               </button>
             </div>
             
-            {/* Bottom controls */}
-            <a
-              href={externalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-medium uppercase tracking-wider text-primary-foreground transition-all hover:bg-primary/90"
-            >
-              <span>Open on {platform === 'youtube' ? 'YouTube' : 'Instagram'}</span>
-              <ExternalLink className="h-3 w-3" />
-            </a>
+            {/* Bottom controls - only show for YouTube */}
+            {platform === 'youtube' && (
+              <a
+                href={externalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-medium uppercase tracking-wider text-primary-foreground transition-all hover:bg-primary/90"
+              >
+                <span>Open on YouTube</span>
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            )}
           </div>
         </div>
       </div>
@@ -200,25 +211,32 @@ const projects = [
   },
   {
     id: 'project-3',
-    title: "REEL EDIT 1",
-    description: "Short-form edit created for social platforms.",
-    videoUrl: "https://www.instagram.com/reel/DSUSTJOkxjC/",
-    platform: 'instagram' as const,
+    title: "REEL EDIT 01 (3D REEL)",
+    description: "A minimal 3D short built around controlled camera movement, depth, and timing. Focused on clean composition, smooth zooms, and visual rhythm without relying on human subjects.",
+    videoUrl: reel01,
+    platform: 'local' as const,
   },
   {
     id: 'project-4',
-    title: "REEL EDIT 2",
-    description: "Short-form edit created for social platforms.",
-    videoUrl: "https://www.instagram.com/reel/DSC2dOYE6Q1/",
-    platform: 'instagram' as const,
+    title: "REEL EDIT 02 (3D REEL)",
+    description: "A stylized 3D edit exploring form, motion, and spatial flow. Designed with precise camera animation and subtle visual transitions to create impact through simplicity.",
+    videoUrl: reel02,
+    platform: 'local' as const,
   },
   {
     id: 'project-5',
-    title: "REEL EDIT 3",
-    description: "Short-form edit created for social platforms.",
-    videoUrl: "https://www.instagram.com/reel/DSfMrI_E4fj/",
-    platform: 'instagram' as const,
-  }
+    title: "REEL EDIT 03 (ARCHITECT / VISUAL EDIT)",
+    description: "Short-form edit crafted for an architectural brand, combining visual elements, structured pacing, and sound design to enhance spatial storytelling and mood.",
+    videoUrl: reel03,
+    platform: 'local' as const,
+  },
+  {
+    id: 'project-6',
+    title: "REEL EDIT 04 (ARCHITECT / VISUAL EDIT)",
+    description: "A visually driven reel edited with layered elements, dynamic cuts, and sound design to complement architectural visuals and deliver a polished, cinematic feel.",
+    videoUrl: reel04,
+    platform: 'local' as const,
+  },
 ];
 
 const Work = () => {

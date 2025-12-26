@@ -27,8 +27,8 @@ const Header = () => {
     >
       <div className="flex items-center justify-between px-6 py-4 lg:px-12">
         <div className="flex flex-col">
-          <span className="font-display text-xl font-bold tracking-tight text-foreground lg:text-2xl">
-            REDDOT
+          <span className="font-display text-xl font-bold tracking-tight text-primary lg:text-2xl">
+            reddot
           </span>
           <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
             Freelance Video Editor

@@ -80,35 +80,13 @@ const ScrollProgress = () => {
                 </span>
                 
                 {/* X cross marker - handwritten style */}
-                <svg 
-                  width="16" 
-                  height="16" 
-                  viewBox="0 0 16 16" 
-                  className={`mb-[-1px] transition-all duration-300 ${
+                <span 
+                  className={`font-handwritten text-2xl leading-none mb-[-4px] transition-all duration-300 ${
                     isPassed ? 'text-foreground' : 'text-muted-foreground/50'
                   } ${isActive ? 'scale-125' : ''} group-hover:text-foreground`}
                 >
-                  <line 
-                    x1="2" y1="2" x2="14" y2="14" 
-                    stroke="currentColor" 
-                    strokeWidth="1.5" 
-                    strokeLinecap="round"
-                    style={{ 
-                      strokeDasharray: isPassed ? '0' : '20',
-                      transition: 'stroke-dasharray 0.5s ease-out'
-                    }}
-                  />
-                  <line 
-                    x1="14" y1="2" x2="2" y2="14" 
-                    stroke="currentColor" 
-                    strokeWidth="1.5" 
-                    strokeLinecap="round"
-                    style={{ 
-                      strokeDasharray: isPassed ? '0' : '20',
-                      transition: 'stroke-dasharray 0.5s ease-out'
-                    }}
-                  />
-                </svg>
+                  x
+                </span>
               </button>
             );
           })}
