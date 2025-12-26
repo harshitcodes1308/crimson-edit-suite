@@ -1,6 +1,6 @@
 import heroPortrait from '@/assets/hero-portrait.jpg';
 const Hero = () => {
-  return <section className="relative min-h-screen">
+  return <section className="relative min-h-screen animate-blur-fade-in">
       <div className="flex min-h-screen flex-col lg:flex-row">
         {/* Left side - Black with text */}
         <div className="relative flex flex-1 flex-col justify-center bg-background px-6 py-24 lg:px-12 lg:py-0">

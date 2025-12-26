@@ -23,6 +23,7 @@ interface ProjectProps {
   videoUrl: string;
   platform: 'youtube' | 'local';
   isReversed?: boolean;
+  isHorizontal?: boolean;
 }
 
 const getYouTubeEmbedUrl = (url: string) => {
@@ -58,7 +59,7 @@ const getExternalUrl = (url: string, platform: 'youtube' | 'local') => {
   return url;
 };
 
-const Project = ({ id, title, description, videoUrl, platform, isReversed = false }: ProjectProps) => {
+const Project = ({ id, title, description, videoUrl, platform, isReversed = false, isHorizontal = false }: ProjectProps) => {
   const [isInView, setIsInView] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -120,7 +121,7 @@ const Project = ({ id, title, description, videoUrl, platform, isReversed = fals
       }}
     >
       {/* Video container */}
-      <div className="relative aspect-[9/16] w-full max-w-[300px] mx-auto flex-shrink-0 lg:max-w-[280px]">
+      <div className={`relative ${isHorizontal ? 'aspect-video w-full max-w-[560px]' : 'aspect-[9/16] w-full max-w-[300px] lg:max-w-[280px]'} mx-auto flex-shrink-0`}>
         <div className="group relative h-full w-full overflow-hidden bg-card rounded-lg">
           {isInView && platform === 'local' && (
             <video
@@ -197,15 +198,15 @@ const Project = ({ id, title, description, videoUrl, platform, isReversed = fals
 const projects = [
   {
     id: 'project-1',
-    title: "TOPPER VS AVERAGE STUDENT",
-    description: "Short-form edit created for social platforms. ICSE Tips and strategies for Class 10 students.",
+    title: "YOUTUBE SHORT 01 (ED-TECH SHORT)",
+    description: "An educational short edited for clarity and retention, using clean cuts, on-screen text, and paced visuals to communicate concepts effectively within a short-form format.",
     videoUrl: "https://www.youtube.com/shorts/mJJOzByneGg",
     platform: 'youtube' as const,
   },
   {
     id: 'project-2',
-    title: "HOW TO COMPLETE SYLLABUS",
-    description: "Short-form edit created for social platforms. ICSE strategy and tips for December completion.",
+    title: "YOUTUBE SHORT 02 (ED-TECH SHORT)",
+    description: "A short-form ed-tech edit focused on structured delivery, visual emphasis, and timing, designed to make academic content engaging and easy to consume on YouTube Shorts.",
     videoUrl: "https://www.youtube.com/shorts/NU5WRrqj0tM",
     platform: 'youtube' as const,
   },
@@ -236,6 +237,7 @@ const projects = [
     description: "A visually driven reel edited with layered elements, dynamic cuts, and sound design to complement architectural visuals and deliver a polished, cinematic feel.",
     videoUrl: reel04,
     platform: 'local' as const,
+    isHorizontal: true,
   },
 ];
 
@@ -271,6 +273,7 @@ const Work = () => {
               videoUrl={project.videoUrl}
               platform={project.platform}
               isReversed={index % 2 !== 0}
+              isHorizontal={'isHorizontal' in project && project.isHorizontal}
             />
           ))}
         </div>
