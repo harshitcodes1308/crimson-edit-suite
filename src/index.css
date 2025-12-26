@@ -41,6 +41,10 @@
     --font-display: 'Bebas Neue', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-handwritten: 'Caveat', cursive;
+    
+    /* Gradient colors */
+    --gold: 38 80% 45%;
+    --gold-dark: 30 70% 30%;
   }
 
   .dark {
