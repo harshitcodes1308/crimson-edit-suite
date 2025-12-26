@@ -42,20 +42,16 @@ const Header = () => {
           >
             Work
           </button>
-          <button
-            onClick={() => scrollToSection('purpose')}
-            className="text-xs font-medium uppercase tracking-wider text-foreground/80 transition-colors hover:text-foreground"
-          >
-            CV
-          </button>
           <span className="hidden h-4 w-px bg-border sm:block" />
-          <button
-            onClick={() => scrollToSection('contact')}
+          <a
+            href="https://wa.me/+918006798525"
+            target="_blank"
+            rel="noopener noreferrer"
             className="group flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-primary transition-colors hover:text-primary/80"
           >
             <span className="h-2 w-2 rounded-full bg-primary" />
             Contact Me
-          </button>
+          </a>
         </nav>
       </div>
     </header>

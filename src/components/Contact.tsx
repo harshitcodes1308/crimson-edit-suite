@@ -35,34 +35,19 @@ const Contact = () => {
 
       {/* CTA Button */}
       <a
-        href="mailto:hello@reddot.com"
+        href="https://wa.me/+918006798525"
+        target="_blank"
+        rel="noopener noreferrer"
         className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-primary px-8 py-4 text-sm font-medium uppercase tracking-wider text-primary-foreground transition-all hover:bg-primary/90"
       >
         <span className="relative z-10">Get in Touch</span>
         <span className="relative z-10 h-2 w-2 rounded-full bg-primary-foreground" />
       </a>
 
-      {/* Social links */}
-      <div className="mt-12 flex items-center gap-8">
-        <a
-          href="#"
-          className="text-xs uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Vimeo
-        </a>
-        <a
-          href="#"
-          className="text-xs uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
-        >
-          LinkedIn
-        </a>
-        <a
-          href="#"
-          className="text-xs uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Instagram
-        </a>
-      </div>
+      {/* Email */}
+      <p className="mt-6 text-sm text-primary">
+        red.dot.visuals.8@gmail.com
+      </p>
     </section>
   );
 };
