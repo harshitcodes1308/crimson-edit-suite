@@ -16,40 +16,51 @@ const GradientBackground = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Create dynamic gradient based on scroll position
+  // Create dynamic gradient based on scroll position with more visible colors
   const getGradientStyle = () => {
-    // Color stops: Black -> Crimson Red -> Deep Gold -> Black
     const phase = scrollProgress;
     
-    // Animate the gradient position based on scroll
-    const angle = 135 + (phase * 45); // Rotate from 135deg to 180deg
+    // More intense, visible gradients
+    const redIntensity = 0.3 + Math.sin(phase * Math.PI) * 0.5;
+    const goldIntensity = 0.2 + Math.sin((phase - 0.2) * Math.PI * 1.5) * 0.4;
+    const darkRedIntensity = 0.4 + phase * 0.3;
     
-    // Dynamic opacity and color mixing
-    const redIntensity = Math.sin(phase * Math.PI) * 0.4;
-    const goldIntensity = Math.sin((phase - 0.3) * Math.PI) * 0.3;
+    // Moving positions
+    const redX = 20 + phase * 60;
+    const redY = 20 + phase * 30;
+    const goldX = 80 - phase * 50;
+    const goldY = 70 - phase * 20;
     
     return {
       background: `
         radial-gradient(
-          ellipse 80% 50% at ${50 + phase * 20}% ${30 + phase * 40}%,
-          hsla(348, 83%, 35%, ${redIntensity}) 0%,
+          ellipse 120% 80% at ${redX}% ${redY}%,
+          hsla(348, 90%, 25%, ${redIntensity}) 0%,
+          hsla(348, 80%, 15%, ${redIntensity * 0.5}) 30%,
+          transparent 60%
+        ),
+        radial-gradient(
+          ellipse 100% 70% at ${goldX}% ${goldY}%,
+          hsla(35, 85%, 35%, ${goldIntensity}) 0%,
+          hsla(25, 70%, 20%, ${goldIntensity * 0.6}) 25%,
           transparent 50%
         ),
         radial-gradient(
-          ellipse 60% 40% at ${70 - phase * 30}% ${60 + phase * 20}%,
-          hsla(38, 80%, 45%, ${goldIntensity}) 0%,
-          transparent 45%
+          ellipse 150% 100% at 50% 120%,
+          hsla(348, 80%, 18%, ${darkRedIntensity}) 0%,
+          hsla(348, 70%, 10%, ${darkRedIntensity * 0.7}) 40%,
+          transparent 70%
         ),
         radial-gradient(
-          ellipse 100% 80% at 50% 100%,
-          hsla(348, 83%, 20%, ${0.3 + phase * 0.2}) 0%,
-          transparent 60%
+          circle at ${30 + phase * 40}% ${50 - phase * 20}%,
+          hsla(30, 70%, 25%, ${goldIntensity * 0.6}) 0%,
+          transparent 35%
         ),
         linear-gradient(
-          ${angle}deg,
+          180deg,
           hsl(0, 0%, 0%) 0%,
-          hsl(0, 0%, 2%) 30%,
-          hsl(348, 30%, ${4 + phase * 3}%) 60%,
+          hsl(348, 20%, 3%) 40%,
+          hsl(25, 15%, 4%) 70%,
           hsl(0, 0%, 0%) 100%
         )
       `,
@@ -58,7 +69,7 @@ const GradientBackground = () => {
 
   return (
     <div 
-      className="fixed inset-0 -z-10 transition-all duration-700 ease-out"
+      className="fixed inset-0 -z-10"
       style={getGradientStyle()}
     />
   );
